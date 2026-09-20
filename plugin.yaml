@@ -1,0 +1,80 @@
+id: lumide_nix
+name: 'Nix'
+description: 'Nix and Nix Flakes language support (nil, nixd) for Lumide IDE.'
+entry_point: 'bin/main.dart'
+
+activation_events:
+  - 'workspaceContains:flake.nix'
+  - 'workspaceContains:flake.lock'
+  - 'workspaceContains:default.nix'
+  - 'workspaceContains:shell.nix'
+  - 'workspaceContains:configuration.nix'
+  - 'workspaceContains:*.nix'
+  - 'onCommand:nix.restartLsp'
+  - 'onCommand:nix.selectLsp'
+  - 'onCommand:nix.flakeCheck'
+  - 'onCommand:nix.flakeUpdate'
+  - 'onCommand:nix.flakeShow'
+  - 'onCommand:nix.formatFile'
+
+permissions:
+  - shell:
+      - nil
+      - nixd
+      - nix
+      - nixpkgs-fmt
+      - alejandra
+      - nixfmt
+      - which
+      - where
+
+configuration:
+  - key: nix.lsp.server
+    type: string
+    default: 'auto'
+    enum:
+      - auto
+      - nil
+      - nixd
+      - custom
+    title: 'Nix Language Server'
+    description: 'Select LSP server: auto (detects nil or nixd), nil, nixd, or custom.'
+  - key: nix.lsp.path
+    type: filePath
+    title: 'Custom LSP Executable Path'
+    description: 'Path to custom Nix LSP executable. If empty, the default server executable from PATH is used.'
+  - key: nix.formatting.command
+    type: string
+    default: 'auto'
+    enum:
+      - auto
+      - nix fmt
+      - alejandra
+      - nixpkgs-fmt
+      - nixfmt
+    title: 'Nix Formatter'
+    description: 'Command used to format Nix files.'
+
+contributes:
+  commands:
+    - id: nix.restartLsp
+      title: 'Restart Language Server'
+      category: 'Nix'
+    - id: nix.selectLsp
+      title: 'Select Language Server (nil / nixd)'
+      category: 'Nix'
+    - id: nix.formatFile
+      title: 'Format File'
+      category: 'Nix'
+    - id: nix.flakeCheck
+      title: 'Flake Check'
+      category: 'Nix'
+    - id: nix.flakeUpdate
+      title: 'Flake Update'
+      category: 'Nix'
+    - id: nix.flakeShow
+      title: 'Flake Show'
+      category: 'Nix'
+  fileNesting:
+    "flake.nix": "flake.lock"
+    "default.nix": "shell.nix"
